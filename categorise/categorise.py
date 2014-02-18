@@ -48,15 +48,16 @@ import mimetypes as mt
 #from send_message import send_msg
 import datetime
 from deluge.ui.client import client
+import re
 
 DEFAULT_PREFS = {
     #sub directories
     "download_path": "",
     "sub_audio":"audio",
     "sub_video":"video",
-    "sub_data":"data",
+    "sub_tv":"tv",
     "sub_documents":"documents",
-    "sub_uncat":"uncategorized",
+    "sub_unsorted":"unsorted",
     
     "jabber_id":"",
     "jabber_password":"",
@@ -64,14 +65,16 @@ DEFAULT_PREFS = {
     "enable_notification":False
 }
 #file formats extension
-DOC_FORMAT = [".pdf", ".doc", ".ods", ".txt", ".odt", ".xls", ".docx"]
-DATA_FORMAT = [".iso", ".img", ".mds", ".mdf", ".nrg", ".bin", ".cue",
-               ".zip", ".rar", ".tar", ".bz2", ".tar.gz", ".tgz", ".r00", 
-               ".exe", ".msi", ".vob", ".bup", ".ifo"]
+TV_SUBSTR = ['HDTV']
+TV_REGEX = ['S\d\dE\d\d\d?', 'Season \d\d?', '[. ]S\d\d?']
+VIDEO_SUBSTR = ['XviD', 'x264', 'x265', 'DVD', 'BR..[. ]', 'BluRay']
+GREY_SUBSTR = ['XXX']
+
+DOC_FORMAT = [".pdf", ".doc", ".ods", ".odt", ".xls", ".docx"]
 GREY_LIST = [".txt", ".nfo", ".jpg", ".bmp", ".gif", ".m3u" ".sfv", ".url",
               ".sub", ".srt", ".idx", ".rtf", ".htm", ".log"]
 
-class Core(CorePluginBase):
+class CategoriseCore(CorePluginBase):
     def enable(self):
         log.debug("Enabling Categorise plugin")
         self.config = deluge.configmanager.ConfigManager("categorise.conf", DEFAULT_PREFS)
@@ -154,7 +157,25 @@ class Core(CorePluginBase):
         """
         download_path = self.config["download_path"]
 
+        tv_regexs = []
+        for regex in TV_REGEX:
+            tv_regexs.append(re.compile(regex))
+
         for file in torrent_files:
+            for substr in GREY_SUBSTR:
+                if file['path'].find(substr) != -1:
+                    continue
+
+            for substr in TV_SUBSTR:
+                if file['path'].find(substr) != -1:
+                    return [os.path.join(download_path, self.config["sub_tv"]), "tv"]
+            for regex in tv_regexs:
+                if regex.search(file['path']):
+                    return [os.path.join(download_path, self.config["sub_tv"]), "tv"]
+            for substr in VIDEO_SUBSTR:
+                if file['path'].find(substr) != -1:
+                    return [os.path.join(download_path, self.config["sub_video"]), "video"]
+
             try:
                 ext = os.path.splitext(file["path"])[1]
                 ext = ext.lower()
@@ -163,20 +184,19 @@ class Core(CorePluginBase):
                 if res in GREY_LIST:
                     log.debug("skipping GREY_LIST extension %s", res)
                     continue
+
                 if (res.startswith("audio")):
                     return [os.path.join(download_path, self.config["sub_audio"]), "audio"]
                 elif (res.startswith("video")):
                     return [os.path.join(download_path, self.config["sub_video"]), "video"]
                 elif(ext in DOC_FORMAT):
                     return [os.path.join(download_path, self.config["sub_documents"]), "doc"]
-                elif(ext in DATA_FORMAT):
-                    return [os.path.join(download_path, self.config["sub_data"]), "data"]
 
             except KeyError:
                     log.debug("unknown extension %s, trying again", ext)
                     continue
                     
-        return [os.path.join(download_path, self.config["sub_uncat"]), "uncategorized"]
+        return [os.path.join(download_path, self.config["sub_unsorted"]), "unsorted"]
     
     
     def _convert_bytes(self, bytes):

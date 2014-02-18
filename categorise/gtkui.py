@@ -66,11 +66,12 @@ class GtkUI(GtkPluginBase):
     
     def on_apply_prefs(self):
         log.debug("Applying prefs for Categorise")
-        download_path = self.glade.get_widget("download_folder").get_current_folder()
+        download_path = self.glade.get_widget("download_folder").get_text()
         audio_path = self.glade.get_widget("audio_folder").get_text()
         video_path = self.glade.get_widget("video_folder").get_text()
+        tv_path = self.glade.get_widget("tv_folder").get_text()
         doc_path = self.glade.get_widget("doc_folder").get_text()
-        data_path = self.glade.get_widget("data_folder").get_text()
+        unsorted_path = self.glade.get_widget("unsorted_folder").get_text()
         
         #jabber notification
         jabber_id = self.glade.get_widget("jabber_id").get_text()
@@ -82,7 +83,8 @@ class GtkUI(GtkPluginBase):
             "download_path": download_path,
             "sub_audio": audio_path,
             "sub_video": video_path,
-            "sub_data":data_path,
+            "sub_tv": tv_path,
+            "sub_unsorted":unsorted_path,
             "sub_documents": doc_path,
             "jabber_id":jabber_id,
             "jabber_password":self.encode_password(jabber_password),
@@ -101,8 +103,9 @@ class GtkUI(GtkPluginBase):
         self.glade.get_widget("download_folder").show()
         self.glade.get_widget("audio_folder").show()
         self.glade.get_widget("video_folder").show()
+        self.glade.get_widget("tv_folder").show()
         self.glade.get_widget("doc_folder").show()
-        self.glade.get_widget("data_folder").show()
+        self.glade.get_widget("unsorted_folder").show()
         
         self.glade.get_widget("jabber_id").show()
         self.glade.get_widget("jabber_password").show()
@@ -110,11 +113,12 @@ class GtkUI(GtkPluginBase):
         self.glade.get_widget("enable_notification").show()
         
         def on_get_config(config):
-            self.glade.get_widget("download_folder").set_current_folder(config["download_path"])
+            self.glade.get_widget("download_folder").set_text(config["download_path"])
             self.glade.get_widget("audio_folder").set_text(config["sub_audio"])
             self.glade.get_widget("video_folder").set_text(config["sub_video"])
+            self.glade.get_widget("tv_folder").set_text(config["sub_tv"])
             self.glade.get_widget("doc_folder").set_text(config["sub_documents"])
-            self.glade.get_widget("data_folder").set_text(config["sub_data"])
+            self.glade.get_widget("unsorted_folder").set_text(config["sub_unsorted"])
             
             self.glade.get_widget("jabber_id").set_text(config["jabber_id"])
             self.glade.get_widget("jabber_password").set_text(self.decode_password(config["jabber_password"]))

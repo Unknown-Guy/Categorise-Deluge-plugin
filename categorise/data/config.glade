@@ -33,12 +33,11 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkFileChooserButton" id="download_folder">
+                      <widget class="GtkEntry" id="download_folder">
                         <property name="visible">True</property>
+                        <property name="can_focus">True</property>
                         <property name="tooltip" translatable="yes">Categorise download directory: all the downloaded files will be moved to the chosen category (see settings below) under this directory</property>
-                        <property name="action">select-folder</property>
-                        <property name="create_folders">False</property>
-                        <property name="title" translatable="yes">Select A Directory</property>
+                        <property name="invisible_char">&#x25CF;</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -109,7 +108,7 @@
                       <widget class="GtkLabel" id="label14">
                         <property name="visible">True</property>
                         <property name="xalign">1</property>
-                        <property name="label" translatable="yes">Documents directory:</property>
+                        <property name="label" translatable="yes">TV directory:</property>
                       </widget>
                       <packing>
                         <property name="top_attach">4</property>
@@ -118,12 +117,12 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkEntry" id="doc_folder">
+                      <widget class="GtkEntry" id="tv_folder">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="tooltip" translatable="yes">The documents directory</property>
+                        <property name="tooltip" translatable="yes">The tv directory</property>
                         <property name="invisible_char">&#x25CF;</property>
-                        <property name="text" translatable="yes">documents</property>
+                        <property name="text" translatable="yes">tv</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -138,7 +137,7 @@
                       <widget class="GtkLabel" id="label15">
                         <property name="visible">True</property>
                         <property name="xalign">1</property>
-                        <property name="label" translatable="yes">Data directory:</property>
+                        <property name="label" translatable="yes">Documents directory:</property>
                       </widget>
                       <packing>
                         <property name="top_attach">5</property>
@@ -147,18 +146,47 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkEntry" id="data_folder">
+                      <widget class="GtkEntry" id="doc_folder">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="tooltip" translatable="yes">The data directory</property>
+                        <property name="tooltip" translatable="yes">The documents directory</property>
                         <property name="invisible_char">&#x25CF;</property>
-                        <property name="text" translatable="yes">data</property>
+                        <property name="text" translatable="yes">documents</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">5</property>
                         <property name="bottom_attach">6</property>
+                        <property name="y_options">GTK_FILL</property>
+                        <property name="x_padding">10</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label16">
+                        <property name="visible">True</property>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes">Unsorted directory:</property>
+                      </widget>
+                      <packing>
+                        <property name="top_attach">6</property>
+                        <property name="bottom_attach">7</property>
+                        <property name="y_options">GTK_FILL</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkEntry" id="unsorted_folder">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="tooltip" translatable="yes">The unsorted directory</property>
+                        <property name="invisible_char">&#x25CF;</property>
+                        <property name="text" translatable="yes">unsorted</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">6</property>
+                        <property name="bottom_attach">7</property>
                         <property name="y_options">GTK_FILL</property>
                         <property name="x_padding">10</property>
                       </packing>
@@ -218,7 +246,7 @@
                         <property name="n_rows">3</property>
                         <property name="n_columns">2</property>
                         <child>
-                          <widget class="GtkLabel" id="label16">
+                          <widget class="GtkLabel" id="label17">
                             <property name="visible">True</property>
                             <property name="xalign">1</property>
                             <property name="label" translatable="yes">Username:</property>
@@ -243,7 +271,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkLabel" id="label17">
+                          <widget class="GtkLabel" id="label18">
                             <property name="visible">True</property>
                             <property name="xalign">1</property>
                             <property name="label" translatable="yes">Password:</property>
@@ -273,7 +301,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkLabel" id="label18">
+                          <widget class="GtkLabel" id="label19">
                             <property name="visible">True</property>
                             <property name="xalign">1</property>
                             <property name="label" translatable="yes">Notify to:</property>

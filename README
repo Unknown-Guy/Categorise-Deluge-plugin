@@ -7,5 +7,7 @@ In order to send notification through Jabber you have to install pyxmpp librarie
 
 See INSTALL for more details.
 
-Changelog:
-http://github.com/ledzgio/Categorise-Deluge-plugin/commits/master/
+  Forked from ledzgio by squisher.
+
+P.S. I made minor changes which suited my needs (e.g. improved heuristics,
+     removed data category, added tv category).
