@@ -31,20 +31,132 @@ Copyright:
     statement from all source files in the program, then also delete it here.
 */
 
-CategorisePlugin = Ext.extend(Deluge.Plugin, {
-	constructor: function(config) {
-		config = Ext.apply({
-			name: "Categorise"
-		}, config);
-		CategorisePlugin.superclass.constructor.call(this, config);
-	},
-	
-	onDisable: function() {
-		
-	},
-	
-	onEnable: function() {
-		
-	}
+Ext.ns('Deluge.ux.preferences');
+
+Deluge.ux.preferences.CategorisePage = Ext.extend(Ext.Panel, {
+
+  border: false,
+  title: _('Categorise'),
+  layout: 'fit',
+
+  initComponent: function() {
+    Deluge.ux.preferences.CategorisePage.superclass.initComponent.call(this);
+
+    this.form = this.add({
+      xtype: 'form',
+      layout: 'form',
+      border: false,
+      autoHeight: true
+    });
+
+    this.base_dir_fieldset = this.form.add({
+      xtype: 'fieldset',
+      border: false,
+      title: _('Root directory'),
+      defaults: {
+        width: 195
+      }
+    });
+
+    this.download_path = this.base_dir_fieldset.add({
+      xtype: 'textfield',
+      fieldLabel: _('Downloads'),
+      name: 'download_path',
+      allowBlank: false
+    });
+
+    this.sub_dir_fieldset = this.form.add({
+      xtype: 'fieldset',
+      border: false,
+      title: _('Subdirectories'),
+      defaults: {
+        width: 195,
+        allowBlank: false
+      }
+    });
+
+    this.sub_tv = this.sub_dir_fieldset.add({
+      xtype: 'textfield',
+      fieldLabel: _('TV Series'),
+      name: 'sub_tv'
+    });
+
+    this.sub_audio = this.sub_dir_fieldset.add({
+      xtype: 'textfield',
+      fieldLabel: _('Audio'),
+      name: 'sub_audio'
+    });
+
+    this.sub_video = this.sub_dir_fieldset.add({
+      xtype: 'textfield',
+      fieldLabel: _('Video'),
+      name: 'sub_video'
+    });
+
+    this.sub_documents = this.sub_dir_fieldset.add({
+      xtype: 'textfield',
+      fieldLabel: _('Documents'),
+      name: 'sub_documents'
+    });
+
+    this.sub_unsorted = this.sub_dir_fieldset.add({
+      xtype: 'textfield',
+      fieldLabel: _('Other'),
+      name: 'sub_unsorted'
+    });
+  },
+
+  onRender: function(ct, position) {
+    Deluge.ux.preferences.CategorisePage.superclass.onRender.call(this, ct, position);
+    this.form.layout = new Ext.layout.FormLayout();
+    this.form.layout.setContainer(this);
+    this.form.doLayout();
+  },
+
+  onApply: function() {
+    var config = {}
+
+    config['download_path'] = this.download_path.getValue();
+    config['sub_audio']     = this.sub_audio.getValue();
+    config['sub_video']     = this.sub_video.getValue();
+    config['sub_tv']        = this.sub_tv.getValue();
+    config['sub_documents'] = this.sub_documents.getValue();
+    config['sub_unsorted']  = this.sub_unsorted.getValue();
+
+    deluge.client.categorise.set_config(config);
+  },
+
+  afterRender: function() {
+    Deluge.ux.preferences.CategorisePage.superclass.afterRender.call(this);
+    this.updateConfig();
+  },
+
+  updateConfig: function() {
+    deluge.client.categorise.get_config({
+      success: function(config) {
+        this.download_path.setValue(config['download_path']);
+        this.sub_audio.setValue(config['sub_audio']);
+        this.sub_video.setValue(config['sub_video']);
+        this.sub_tv.setValue(config['sub_tv']);
+        this.sub_documents.setValue(config['sub_documents']);
+        this.sub_unsorted.setValue(config['sub_unsorted'] );
+      },
+      scope: this
+    });
+  }
 });
-new CategorisePlugin();
+
+Deluge.plugins.CategorisePlugin = Ext.extend(Deluge.Plugin, {
+
+  name: 'Categorise',
+
+  onDisable: function() {
+    deluge.preferences.removePage(this.prefsPage);
+  },
+
+  onEnable: function() {
+    this.prefsPage = deluge.preferences.addPage(new Deluge.ux.preferences.CategorisePage());
+  }
+});
+
+Deluge.registerPlugin('Categorise', Deluge.plugins.CategorisePlugin);
